@@ -1,0 +1,15 @@
+0 HEAD
+1 SOUR PAF
+1 GEDC
+2 VERS 5.5
+2 FORM LINEAGE-LINKED
+1 CHAR UTF-8
+1 SUBM @U1@
+0 @I001@ INDI
+1 NAME aewfd /aewsdv/
+0 @I002@ INDI
+1 NAME aewrgvseraf /ewafdvrevds/
+0 @U1@ SUBM
+1 NAME kevin
+1 ADDR kevin
+0 TRLR

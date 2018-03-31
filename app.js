@@ -295,6 +295,23 @@ app.get('/database-store', function(req , res) {
   });
 }); // end app.get
 
+app.get('/database-clear', function(req , res) {
+  connection.query("DELETE FROM INDIVIDUAL", function(err, rows, fields) {
+    if(err) console.log('could not delete from individual');
+    else {
+      connection.query("DELETE FROM FILE", function(err, rows, fields) {
+        if(err) console.log('could not delete from file');
+        else res.send({
+          success: 'Cleared tables'
+        });
+      });
+    }
+  });
+
+
+
+});
+
 app.listen(portNum);
 console.log('Running app at localhost: ' + portNum);
 

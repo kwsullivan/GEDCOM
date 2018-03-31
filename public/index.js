@@ -218,6 +218,17 @@ $('#store-all').click(function() {
 
 $('#clear-all').click(function() {
     console.log('clicked clear all');
+        $.ajax({
+        type: 'get',
+        dataType: 'json',
+        url: '/database-clear',
+        success: function (data) {
+            console.log(data);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
 });
 
 $('#display-all').click(function() {

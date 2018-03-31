@@ -268,8 +268,8 @@ $('#modal-file-dropdown').click(function() {
 $('#login-form').submit(function(e) {
     e.preventDefault();
 
-    //var currHost = 'dursley.socs.uoguelph.ca';
-    var currHost = 'localhost';
+    var currHost = 'dursley.socs.uoguelph.ca';
+    //var currHost = 'localhost';
 
     $.ajax({
         type: 'get',

@@ -19,7 +19,7 @@ const JavaScriptObfuscator = require('javascript-obfuscator');
 // Important, pass in port as in `npm run dev 1234`, do not change
 const portNum = process.argv[2];
 
-var connection = 0;
+var connection;
 
 // Send HTML at root, do not change
 app.get('/',function(req,res){
@@ -262,18 +262,17 @@ app.get('/database-store', function(req , res) {
     for(var i in filepaths) {
       let fileLib = sharedLib.fileToJSON(path, filepaths[i]);
       var files = JSON.parse(fileLib);
-      let fileData = ("INSERT INTO FILE (file_Name, source, version, encoding, sub_name, sub_addr, num_individials, num_families) VALUES ('"
+      let fileData = ("INSERT INTO FILE (file_Name, source, version, encoding, sub_name, sub_addr, num_individuals, num_families) VALUES ('"
                          + filepaths[i] + "','" + files.source + "','" + files.gedc + "','" + files.encoding + "','"
                          + files.submitter + "','" + files.address + "','" + files.indivs + "','" + files.fams + "')");
       
 
-        connection.query(fileData, function (err, rows, fields) {
+      connection.query(fileData, function (err, rows, fields) {
         if (err) console.log("Something went wrong. "+err);
-        else console.log('Success for file' + filepaths[i]);
-      });
-    }
-      for(let curr of filepaths) {
-        connection.query("SELECT file_id FROM FILE WHERE file_name='" + curr + "'", function(err, result) {
+        else{
+          console.log('Success for file' + filepaths[i]);
+          for(let curr of filepaths) {
+            connection.query("SELECT file_id FROM FILE WHERE file_name='" + curr + "'", function(err, result) {
           if (err) console.log("Something went wrong. "+err);
           else {
             var id = result[0].file_id;
@@ -289,6 +288,10 @@ app.get('/database-store', function(req , res) {
           }
         });
       }
+        } 
+      });
+    }
+      
   });
 }); // end app.get
 

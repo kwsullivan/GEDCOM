@@ -25,6 +25,12 @@ int main(int argc, char**argv) {
 	}
 	printf(RESET);
 
+	char* ITJ = indivsToJSON(argv[1]);
+	printf("%s\n", ITJ);
+
+	char* FTJ = fileToJSON("../", argv[1]);
+	printf("%s\n", FTJ);
+
 	//err = writeGEDCOM("test.ged", gedObj);
 
 	//**************************************************

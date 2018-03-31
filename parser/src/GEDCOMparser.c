@@ -1541,8 +1541,8 @@ void deleteIndividual(void* toBeDeleted) {
         free(delIndi->surname);
     }
     clearListNode(&delIndi->families);
-    clearList(&delIndi->events);
-    clearList(&delIndi->otherFields);
+    clearListNode(&delIndi->events);
+    clearListNode(&delIndi->otherFields);
     if(delIndi != NULL) {
         free(delIndi);
     }
@@ -1792,9 +1792,9 @@ char* fileToJSON(char* path, char* fileName) {
         if(address != NULL) {
             free(address);
         }
-*/
+        */
         if(tempObj != NULL) {
-            deleteGEDCOM(tempObj);
+            //deleteGEDCOM(tempObj);
         }
         
         return finalString;
@@ -1803,7 +1803,7 @@ char* fileToJSON(char* path, char* fileName) {
 }
 
 char* stringToJSON(char* type, char* string) {
-    char* JSON = malloc(sizeof(char)*(strlen(string) + strlen(type) + 20));
+    char* JSON = malloc(sizeof(char)*(strlen(string) + strlen(type) + 100));
     if(string == NULL) {
         sprintf(JSON, "\"%s\":\"\"", type);
     }
@@ -1859,6 +1859,7 @@ char* formToGEDCOM(char* fileName, char* submitter, char* address) {
 
 char* indivsToJSON(char* fileName) {
     if(fileName == NULL) {
+        printf("first\n");
         return "[]";
     }
     char* delims = "\"";
@@ -1875,12 +1876,14 @@ char* indivsToJSON(char* fileName) {
     if(err.type == OK) {
 
         char* indivs = iListToJSON(obj->individuals);
+        deleteGEDCOM(obj);
         if(indivs == NULL) {
+            printf("second\n");
             return "[]";
         }
         return indivs;
     }
-
+    printf("third\n");
     return "[]";
 }
 

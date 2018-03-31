@@ -330,6 +330,7 @@ char* stringToJSON(char* type, char* string);
 char* JSONtoString(char* JSONstring);
 char* formToGEDCOM(char* fileName, char* submitter, char* address);
 char* indivsToJSON(char* fileName);
+char* addIndivToFile(char* JSONobject, char* fileName);
 
 //************************************************************************************************************
 

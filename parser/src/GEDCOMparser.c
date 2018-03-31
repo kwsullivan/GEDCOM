@@ -12,7 +12,7 @@
 
 GEDCOMerror createGEDCOM(char* fileName, GEDCOMobject** obj) {
 
-    FILE * fptr;
+    FILE * fptr = NULL;
     fptr = fopen(fileName, "r");
     GEDCOMerror err;
 
@@ -92,14 +92,16 @@ GEDCOMerror createGEDCOM(char* fileName, GEDCOMobject** obj) {
         }
     }
 
+    free(buffer);
+/*
     if(GEDCOMpointer[count] == NULL) {
         lineRead[lineLen] = '\0';
-        GEDCOMpointer[count] = malloc(sizeof(char)*lineLen+1);
-        strcpy(GEDCOMpointer[count], lineRead);
+        GEDCOMpointer[count] = malloc(sizeof(char)*2);
+        strcpy(GEDCOMpointer[count], "\0");
         count++;
         lineLen = 0;
     }
-
+*/
     //*********************************************************************************
     //************** END OF FILE READER
     //*********************************************************************************
@@ -183,7 +185,8 @@ GEDCOMerror createGEDCOM(char* fileName, GEDCOMobject** obj) {
             }
         }
 
-        GEDCOMinput * newParse = createGEDCOMinput(i+1,level,tag,xref,value);
+        GEDCOMinput * newParse = NULL; 
+        newParse = createGEDCOMinput(i+1,level,tag,xref,value);
 
         if(value != NULL) {
             free(value);
@@ -407,7 +410,7 @@ GEDCOMerror createGEDCOM(char* fileName, GEDCOMobject** obj) {
     //************** END REMOVE XREF TAGS FROM OTHER FIELDS
     //*********************************************************************************
 
-    clearListNode(&GEDCOMlist);
+    clearList(&GEDCOMlist);
 
     fclose(fptr);
     err.type = OK;
@@ -498,31 +501,29 @@ void deleteGEDCOM(GEDCOMobject* obj) {
     if(obj == NULL) {
         return;
     }
-    if(obj->header != NULL) {
-        if(obj->header->submitter != NULL) {
-            free(obj->header->submitter);
-            obj->header->submitter = NULL;
-        }
-        if(getLength(obj->header->otherFields) > 0) {
-            clearListNode(&obj->header->otherFields);
-        }
-            free(obj->header);
-
-        obj->header = NULL;
-    }
     if(obj->submitter != NULL) {
 
         if(getLength(obj->submitter->otherFields) > 0) {
-            clearListNode(&obj->header->otherFields);
-            free(obj->submitter);
+            clearList(&obj->submitter->otherFields);
         }
+         //free(obj->submitter);
         obj->submitter = NULL;
     }
+
+    if(obj->header != NULL) {
+
+        if(getLength(obj->header->otherFields) > 0) {
+            clearList(&obj->header->otherFields);
+        }
+        //free(obj->header);
+        obj->header = NULL;
+    }
+
     if(getLength(obj->families) > 0) {
         clearListNode(&obj->families);
     }
     if(getLength(obj->individuals) > 0) {
-        clearListNode(&obj->individuals);
+        clearList(&obj->individuals);
     }
     if(obj != NULL) {
         free(obj);
@@ -531,32 +532,63 @@ void deleteGEDCOM(GEDCOMobject* obj) {
 
 char* printError(GEDCOMerror err) {
 
-    char* error = malloc(sizeof(char)*20);
-    
     switch(err.type) {
         case OK:
+            return "OK";
+            break;
+        case INV_FILE:
+            return "INV_FILE";
+            break;
+        case INV_GEDCOM:
+            return "INV_GEDCOM";
+            break;
+        case INV_HEADER:
+            return "INV_HEADER";
+            break;
+        case INV_RECORD:
+            return "INV_RECORD";
+            break;
+        case OTHER_ERROR:
+            return "OTHER_ERROR";
+            break;
+        case WRITE_ERROR:
+            return "WRITE_ERROR";
+            break;
+    }
+    //char* error = NULL;
+    /*
+    switch(err.type) {
+        case OK:
+        error = malloc(sizeof(char)*20);
             sprintf(error, "OK\nLine: %d\n", -1);
             break;
         case INV_FILE:
+        error = malloc(sizeof(char)*20);
             sprintf(error, "INV_FILE\nLine: %d\n", err.line);
             break;
         case INV_GEDCOM:
+        error = malloc(sizeof(char)*20);
             sprintf(error, "INV_GEDCOM\nLine: %d\n", err.line);
             break;
         case INV_HEADER:
+        error = malloc(sizeof(char)*20);
             sprintf(error, "INV_HEADER\nLine: %d\n", err.line);
             break;
         case INV_RECORD:
+        error = malloc(sizeof(char)*20);
             sprintf(error, "INV_RECORD\nLine: %d\n", err.line);
             break;
         case OTHER_ERROR:
+        error = malloc(sizeof(char)*20);
             sprintf(error, "OTHER_ERROR\nLine: %d\n", err.line);
             break;
         case WRITE_ERROR:
+        error = malloc(sizeof(char)*20);
             sprintf(error, "WRITE_ERROR\n");
             break;
     }
     return error;
+    */
 }
 
 Individual* findPerson(const GEDCOMobject* familyRecord, bool (*compare)(const void* first, const void* second), const void* person) {
@@ -603,7 +635,7 @@ GEDCOMerror writeGEDCOM(char* fileName, const GEDCOMobject* obj) {
     GEDCOMerror err;
     err.type = OK;
     err.line = -1;
-    FILE* fptr;
+    FILE* fptr = NULL;
 
     int indivID = 1;
     int famID = 1;
@@ -611,7 +643,12 @@ GEDCOMerror writeGEDCOM(char* fileName, const GEDCOMobject* obj) {
     char stringID[8];
     char submTag[5] = "@U1@";
 
-    if(fileName == NULL || obj == NULL) {
+    if(fileName == NULL) {
+        err.type = WRITE_ERROR;
+        err.line = -1;
+        return err;
+    }
+    if(obj == NULL) {
         err.type = WRITE_ERROR;
         err.line = -1;
         return err;
@@ -977,7 +1014,7 @@ char* indToJSON(const Individual* ind) {
         return "";
     }
     if(ind->givenName != NULL) {
-        first = malloc(sizeof(char)*strlen(ind->givenName)+1);
+        first = malloc(sizeof(char)*strlen(ind->givenName)+10);
         strcpy(first, ind->givenName);
 
     }
@@ -987,7 +1024,7 @@ char* indToJSON(const Individual* ind) {
     }
 
     if(ind->surname != NULL) {
-        last = malloc(sizeof(char)*strlen(ind->surname)+1);
+        last = malloc(sizeof(char)*strlen(ind->surname)+10);
         strcpy(last, ind->surname);
     }
     else {
@@ -1048,7 +1085,7 @@ char* indToJSON(const Individual* ind) {
     }
     sprintf(famSize, "%d", intFamSize);
 
-    char* string = malloc(sizeof(char)*(strlen(first)+strlen(last)+100));
+    char* string = malloc(sizeof(char)*(strlen(first)+strlen(last)+200));
 
     //sprintf(string, "{\"givenName\":\"%s\",\"surname\":\"%s\"}", first, last);
     sprintf(string, "{\"givenName\":\"%s\",\"surname\":\"%s\",\"sex\":\"%s\",\"famSize\":\"%s\"}", first, last, sex, famSize);
@@ -1354,18 +1391,14 @@ void addIndividual(GEDCOMobject* obj, const Individual* toBeAdded) {
 char* iListToJSON(List iList) {
     char* string = NULL;
     if(getLength(iList) < 1) {
-        return "[]";
+        return NULL;
     }
     if(iList.head == NULL) {
-        string = malloc(sizeof(char)*5);
-        strcpy(string, "[");
-        return string;
+        return NULL;
     }
 
     if(iList.length == 0) {
-        string = malloc(sizeof(char)*5);
-        strcpy(string, "[");
-        return string;
+        return NULL;
     }
 
     int totalSize = 0;
@@ -1378,7 +1411,7 @@ char* iListToJSON(List iList) {
         count++;
         temp = temp->next;
     }
-    string = malloc(sizeof(char)*totalSize+count+3);
+    string = malloc(sizeof(char)*(totalSize+count*20));
 
         strcpy(string, "[");
 
@@ -1391,11 +1424,11 @@ char* iListToJSON(List iList) {
         if(temp->next != NULL) {
             strcat(string, ",");
         }
-        free(JSONString);
+        //free(JSONString);
         temp = temp->next;
     }
 
-        strcat(string, "]");
+    strcat(string, "]");
 
     return string;
 }
@@ -1461,6 +1494,13 @@ char* printGeneration(void* toBePrinted) {
 
 void deleteEvent(void* toBeDeleted) {
     Event* delEvent = (Event*)toBeDeleted;
+
+    if(delEvent->place != NULL) {
+        free(delEvent->place);
+    }
+    if(delEvent->date != NULL) {
+        free(delEvent->date);
+    }
     if(delEvent != NULL) {
         free(delEvent);
     }
@@ -1494,6 +1534,15 @@ char* printEvent(void* toBePrinted) {
 
 void deleteIndividual(void* toBeDeleted) {
     Individual* delIndi = (Individual*)toBeDeleted;
+    if(delIndi->givenName != NULL) {
+        free(delIndi->givenName);
+    }
+    if(delIndi->surname != NULL) {
+        free(delIndi->surname);
+    }
+    clearListNode(&delIndi->families);
+    clearList(&delIndi->events);
+    clearList(&delIndi->otherFields);
     if(delIndi != NULL) {
         free(delIndi);
     }
@@ -1559,6 +1608,16 @@ char* printIndividual(void* toBePrinted) {
 
 void deleteFamily(void* toBeDeleted) {
     Family * delFam = (Family*)toBeDeleted;
+
+    if(delFam->wife != NULL) {
+        free(delFam->wife);
+    }
+    if(delFam->husband != NULL) {
+        free(delFam->husband);
+    }
+    clearListNode(&delFam->children);
+    clearList(&delFam->events);
+    clearList(&delFam->otherFields);
     if(delFam != NULL) {
         free(delFam);
     }
@@ -1626,6 +1685,12 @@ char* printFamily(void* toBePrinted) {
 
 void deleteField(void* toBeDeleted) {
     Field* delField = (Field*)toBeDeleted;
+    if(delField->tag != NULL) {
+        free(delField->tag);
+    }
+    if(delField->value != NULL) {
+        free(delField->value);
+    }
     if(delField != NULL) {
         free(delField);
     }
@@ -1650,7 +1715,7 @@ char* printField(void* toBePrinted) {
 //************************************************************************************************************
 char* fileToJSON(char* path, char* fileName) {
 
-    char* convertFile = malloc(sizeof(char)*strlen(path)+strlen(fileName)+1);
+    char* convertFile = malloc(sizeof(char)*strlen(path)+strlen(fileName)+10);
     sprintf(convertFile, "%s/%s", path, fileName);
 
     GEDCOMobject* tempObj = NULL;
@@ -1699,19 +1764,19 @@ char* fileToJSON(char* path, char* fileName) {
         }
 
 
-        char* numIndivs = malloc(sizeof(char)*5);
+        char* numIndivs = malloc(sizeof(char)*10);
         sprintf(numIndivs,"%d", tempObj->individuals.length);
 
         indivs = stringToJSON("indivs", numIndivs);
 
-        char* numFams = malloc(sizeof(char)*5);
+        char* numFams = malloc(sizeof(char)*10);
         sprintf(numFams,"%d", tempObj->families.length);
         fams = stringToJSON("fams", numFams);
         int length = strlen(source)+strlen(gedc)+strlen(encoding)+strlen(submitter)+strlen(address) + strlen(indivs) + strlen(fams);
 
         finalString = malloc(sizeof(char) * length + 50);
         sprintf(finalString, "{%s,%s,%s,%s,%s,%s,%s}", source, gedc, encoding, submitter, address, indivs, fams);
-
+/*
         if(source != NULL) {
             free(source);
         }
@@ -1727,19 +1792,24 @@ char* fileToJSON(char* path, char* fileName) {
         if(address != NULL) {
             free(address);
         }
-        
+*/
         if(tempObj != NULL) {
             deleteGEDCOM(tempObj);
         }
         
         return finalString;
     }
-    return "ERROR";
+    return "{}";
 }
 
 char* stringToJSON(char* type, char* string) {
-    char* JSON = malloc(sizeof(char)*(strlen(string) + strlen(type) + 10));
-    sprintf(JSON, "\"%s\":\"%s\"", type, string);
+    char* JSON = malloc(sizeof(char)*(strlen(string) + strlen(type) + 20));
+    if(string == NULL) {
+        sprintf(JSON, "\"%s\":\"\"", type);
+    }
+    else {
+        sprintf(JSON, "\"%s\":\"%s\"", type, string);
+    }
     return JSON;
 
 }
@@ -1780,7 +1850,7 @@ char* formToGEDCOM(char* fileName, char* submitter, char* address) {
     obj->header->submitter = obj->submitter;
     obj->header->otherFields = initializeList(&printField, &deleteField, &compareFields);
 
-    char* fullFile = malloc(sizeof(char) * (strlen(file) + 50));
+    char* fullFile = malloc(sizeof(char) * (strlen(file) + 100));
     sprintf(fullFile, "./uploads/%s", file);
     writeGEDCOM(fullFile, obj);
 
@@ -1789,7 +1859,7 @@ char* formToGEDCOM(char* fileName, char* submitter, char* address) {
 
 char* indivsToJSON(char* fileName) {
     if(fileName == NULL) {
-        return NULL;
+        return "[]";
     }
     char* delims = "\"";
     char* file = strtok(fileName, delims);
@@ -1798,10 +1868,12 @@ char* indivsToJSON(char* fileName) {
     }
     char* fullFile = malloc(sizeof(char) * (strlen(file) + 100));
     sprintf(fullFile, "./uploads/%s", file);
+
     GEDCOMobject* obj = NULL;
     GEDCOMerror err; 
     err = createGEDCOM(fullFile, &obj);
     if(err.type == OK) {
+
         char* indivs = iListToJSON(obj->individuals);
         if(indivs == NULL) {
             return "[]";
@@ -1809,7 +1881,7 @@ char* indivsToJSON(char* fileName) {
         return indivs;
     }
 
-    return NULL;
+    return "[]";
 }
 
 char* addIndivToFile(char* JSONobject, char* fileName) {

@@ -17,7 +17,9 @@ all: $(LIB)
 
 $(LIB) :
 	$(CC) $(CFLAGS) $(LDFLAGS) src/LinkedListAPI.c src/GEDCOMparser.c src/GEDCOMutilities.c -shared -o ../$(LIB)
-	
+
+main:
+	$(CC) $(CFLAGS) $(LDFLAGS) ./src/*.c -Iinclude -o ./bin/main
 clean :
 	rm ../$(LIB)
 

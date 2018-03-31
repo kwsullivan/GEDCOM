@@ -69,7 +69,7 @@ void clearList(List* list){
 *@param data - is a void * pointer to any data type.  Data must be allocated on the heap.
 **/
 Node* initializeNode(void* data){
-	Node* tmpNode;
+	Node* tmpNode = NULL;
 	
 	tmpNode = (Node*)malloc(sizeof(Node));
 	

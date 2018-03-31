@@ -122,3 +122,7 @@ textarea#desc-text, textarea#ancs-text {
 label {
     font-size: 14pt;
 }
+
+.btn-group{
+    color: #FFF;
+}

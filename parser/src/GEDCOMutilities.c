@@ -13,7 +13,7 @@ void testLine(int type) {
 
 GEDCOMinput* createGEDCOMinput(int line, int level, char* tag, char* XREF_ID, char* value) {
 
-    GEDCOMinput * input = malloc(sizeof(GEDCOMinput)+1);
+    GEDCOMinput * input = malloc(sizeof(GEDCOMinput));
 
     input->line = line;
     input->level = level;
@@ -32,6 +32,7 @@ GEDCOMinput* createGEDCOMinput(int line, int level, char* tag, char* XREF_ID, ch
     return input;
 }
 
+
 char* getLine(GEDCOMinput * l) {
     printf("%d|L:%d\nXREF:'%s'\nTAG:%s\nVALUE:%s",l->line,l->level,l->XREF_ID, l->tag, l->value);
     return "\n";
@@ -43,8 +44,20 @@ char* printLine(void* toBePrinted) {
 }
 
 void deleteLine(void* toBeDeleted) {
-    GEDCOMinput* del = (GEDCOMinput*)toBeDeleted;
-        free(del);
+    GEDCOMinput * toDel = (GEDCOMinput*)toBeDeleted;
+
+    if(toDel->tag != NULL) {
+        free(toDel->tag);
+    }
+    if(toDel->XREF_ID != NULL) {
+        free(toDel->XREF_ID);
+    }
+    if(toDel->value != NULL) {
+        free(toDel->value);
+    }
+    if(toDel != NULL) {
+        free(toDel);
+    }
 }
 
 int compareLines(const void* first, const void* second) {
@@ -166,7 +179,7 @@ bool tagCheckError(char** GEDCOMpointer, int numLines, GEDCOMerror* err) {
 }
 
 GEDCOMobject* createObject() {
-    GEDCOMobject* obj = malloc(sizeof(GEDCOMobject)+1);
+    GEDCOMobject* obj = malloc(sizeof(GEDCOMobject));
     obj->families = initializeList(&printFamily, &deleteFamily, &compareFamilies);
     obj->individuals = initializeList(&printIndividual, &deleteIndividual, &compareIndividuals);
     obj->header = NULL;
@@ -175,7 +188,7 @@ GEDCOMobject* createObject() {
 }
 
 writePerson* createWPerson(Individual* person, char* indiTag) {
-    writePerson* indiv = malloc(sizeof(writePerson)+1);
+    writePerson* indiv = malloc(sizeof(writePerson));
     indiv->person = person;
     indiv->indiTag = malloc(sizeof(char)*strlen(indiTag)+1);
     strcpy(indiv->indiTag, indiTag);
@@ -222,24 +235,24 @@ void addFamWPerson(writePerson* person, char* famTag, tagType type) {
 
 Event* createEvent(char* type, char* date, char* place) {
 
-    Event* event = malloc(sizeof(Event)+1);
+    Event* event = malloc(sizeof(Event));
     if(date == NULL) {
         event->date = malloc(sizeof(char)*2);
         strcpy(event->date, "");
     }
     else {
-        event->date = malloc(sizeof(char)*strlen(date)+1);
+        event->date = malloc(sizeof(char)*strlen(date));
         strcpy(event->date, date);
-        event->date[strlen(date)] = '\0';
+        //event->date[strlen(date)] = '\0';
     }
     if(place == NULL) {
         event->place = malloc(sizeof(char)*2);
         strcpy(event->place, "");
     }
     else {
-        event->place = malloc(sizeof(char)*strlen(place)+1);
+        event->place = malloc(sizeof(char)*strlen(place));
         strcpy(event->place, place);
-        event->place[strlen(place)] = '\0';
+        //event->place[strlen(place)] = '\0';
     }
 
 
@@ -247,7 +260,7 @@ Event* createEvent(char* type, char* date, char* place) {
     return event;
 }
 Field* createField(char* tag, char* value) {
-    Field* field = malloc(sizeof(Field)+1);
+    Field* field = malloc(sizeof(Field));
     field->tag = malloc(sizeof(char)*strlen(tag)+1);
     strcpy(field->tag, tag);
     field->tag[strlen(field->tag)] = '\0';
@@ -258,7 +271,7 @@ Field* createField(char* tag, char* value) {
 }
 
 List* createList(char* (*printFunction)(void* toBePrinted),void (*deleteFunction)(void* toBeDeleted),int (*compareFunction)(const void* first,const void* second)){
-    List* tmpList = malloc(sizeof(List)+1);
+    List* tmpList = malloc(sizeof(List));
     
     tmpList->head = NULL;
     tmpList->tail = NULL;
@@ -272,7 +285,7 @@ List* createList(char* (*printFunction)(void* toBePrinted),void (*deleteFunction
 
 Individual* createIndividual(char* firstName, char* lastName, List events, List otherFields) {
 
-    Individual* indiv = malloc(sizeof(Individual)+1);
+    Individual* indiv = malloc(sizeof(Individual));
     indiv->givenName = malloc(sizeof(char)*strlen(firstName)+1);
     indiv->surname = malloc(sizeof(char)*strlen(lastName)+1);
 
@@ -288,7 +301,7 @@ Individual* createIndividual(char* firstName, char* lastName, List events, List 
     return indiv;
 }
 Family* createFamily(Individual* wife, Individual* husband, List childList, List events, List otherFields) {
-    Family* family = malloc(sizeof(Family)+1);
+    Family* family = malloc(sizeof(Family));
     family->wife = wife;
     family->husband = husband;
     
@@ -424,6 +437,8 @@ Individual* parseIndividual(Individual* individual, Node* temp, GEDCOMerror* err
     char* givenName = NULL;
     char* surname = NULL;
     char* eventTag = NULL;
+    char* date = NULL;
+    char* place = NULL;
     
     List events = initializeList(&printEvent, &deleteEvent, &compareEvents);
     List otherFields = initializeList(&printField, &deleteField, &compareFields);
@@ -483,8 +498,7 @@ Individual* parseIndividual(Individual* individual, Node* temp, GEDCOMerror* err
         if(foundMatch == 1) {
             temp = temp->next;
             parsedData = (GEDCOMinput*)temp->data;
-            char* date = NULL;
-            char* place = NULL;
+            
             while(parsedData->level > 1) {
                 if(strcmp(parsedData->tag, "DATE") == 0) {
                     date = malloc(sizeof(parsedData->value)+1);
@@ -516,26 +530,26 @@ Individual* parseIndividual(Individual* individual, Node* temp, GEDCOMerror* err
             insertBack(&events, indiEvent);
             foundMatch = 0;
             //strcpy(eventTag, "");
-            /*
-            if(place != NULL) {
-                free(place);
-                place = NULL;
-            }
-            if(date != NULL) {
-                free(date);
-                date = NULL;
-            }
-            if(eventTag != NULL) {
-                free(eventTag);
-                eventTag = NULL;
-            }
-            */
+            
+            
         }
         else {
             Field * storeField = createField(parsedData->tag, parsedData->value);
             insertBack(&otherFields, storeField);
             temp = temp->next;
             parsedData = (GEDCOMinput*)temp->data;
+        }
+        if(place != NULL) {
+            free(place);
+            place = NULL;
+        }
+        if(date != NULL) {
+            free(date);
+            date = NULL;
+        }
+        if(eventTag != NULL) {
+            free(eventTag);
+            eventTag = NULL;
         }
         
     }
@@ -547,8 +561,8 @@ Family* parseFamily(Family* family, Node* temp, GEDCOMobject** obj, GEDCOMerror*
     
     temp = temp->next;
     GEDCOMinput* parsedData = (GEDCOMinput*)temp->data;
-    char* famXref = malloc(sizeof(parsedData->XREF_ID)+1);
-    strcpy(famXref, parsedData->XREF_ID);
+    //char* famXref = malloc(sizeof(parsedData->XREF_ID)+1);
+    //strcpy(famXref, parsedData->XREF_ID);
     Individual* husband = NULL;
     Individual* wife = NULL;
     List childList = initializeList(&printIndividual, &deleteIndividual, &compareIndividuals);
@@ -638,9 +652,12 @@ Family* parseFamily(Family* family, Node* temp, GEDCOMobject** obj, GEDCOMerror*
                 Field * insertField = createField(parsedData->tag, parsedData->value);
                 insertBack(&otherFields, insertField);
             }
+            
         }
+
         temp = temp->next;
         parsedData = (GEDCOMinput*)temp->data;
+
     }
 
     family = createFamily(wife, husband, childList, famEvents, otherFields);

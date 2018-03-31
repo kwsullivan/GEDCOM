@@ -16,392 +16,372 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <!-- Custom CSS End -->
 </head>
-  <body id="page-top">
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-      <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="#page-top">Genealogy App</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#createPage">Create Simple GEDCOM</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#indivPage">Add Individual</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#descPage">Get Descendents</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#ancsPage">Get Ancestors</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#databasePage">Database</a>
-            </li>
-          </ul>
-        </div>
+<body id="page-top">
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">Genealogy App</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#createPage">Create Simple GEDCOM</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#indivPage">Add Individual</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#descPage">Get Descendents</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#ancsPage">Get Ancestors</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#databasePage">Database</a>
+          </li>
+        </ul>
       </div>
-    </nav>
-    <header class="bg-success text-white">
-      <div class="container text-center">
-        <h1>Genealogy App</h1>
-        <p class="lead">A Software Systems and Development Experience</p>
-      </div>
-    </header>
-    <br>
+    </div>
+  </nav>
+  <header class="bg-success text-white">
+    <div class="container text-center">
+      <h1>Genealogy App</h1>
+      <p class="lead">A Software Systems and Development Experience</p>
+    </div>
+  </header>
+  <br>
   <div class="col-lg-8 mx-auto">
   	<div id="status-panel">
-    <h3>Status Panel</h3>
-    <div id="status-box" class="status-box">
-
-  	</div>
+      <h3>Status Panel</h3>
+      <div id="status-box" class="status-box">
+      </div>
     </div>
   </div>
 
-    <section id="homePage">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-
-            <div class="tab-pane container" id="uploadFile">
-              <form id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
-                <input type="file" name="uploadFile" class="btn btn-secondary">
-                <div style="padding:10px;">
+  <section id="homePage">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <div class="tab-pane container" id="uploadFile">
+            <form id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
+              <input type="file" name="uploadFile" class="btn btn-secondary">
+              <div style="padding:10px;">
                 <input type="submit" value="Upload">
               </div>
-              </form>
+            </form>
+          </div>
+        <br>
+        <div id="log-panel">
+          <h2>File Log Panel</h2>
+          <table id="log-table">
+            <thead>
+              <th>Filename</th>
+              <th>Source</th>
+              <th>GEDC</th>
+              <th>Encoding</th>
+              <th>Submitter</th>
+              <th>Address</th>
+              <th>Individuals</th>
+              <th>Families</th>
+            </thead>
+            <tbody id="log-body"></tbody>
+          </table>
+        </div>
+        <br>
+        <div id="view-panel">
+        <h3>GEDCOM View Panel</h3>
+        <div id="download">
+          <br>
+          <div class="dropdown">
+            <select id="file-dropdown"></select>
             </div>
-			  <br>
-          	<div id="log-panel">
-			<h2>File Log Panel</h2>
-			<table id="log-table">
-				<thead>
-		        <th>Filename</th>
-		        <th>Source</th>
-		        <th>GEDC</th>
-		        <th>Encoding</th>
-		        <th>Submitter</th>
-		        <th>Address</th>
-		        <th>Individuals</th>
-		        <th>Families</th>
-		      </thead>
-		      <tbody id="log-body">
-		      	</tbody>
-    		</table>
-  			</div>
-		  	<br>
-
-  <div id="view-panel">
-    <h3>GEDCOM View Panel</h3>
-    <div id="download">
-    <br>
-	<div class="dropdown">
-	<select id="file-dropdown"></select>
-	</div>
-	<label for="currFile">Selected File:</label>
-	<br>
-	<textarea readonly id="selected-file"></textarea>
-  </div>
-  <br>
-    <table id="view-table">
-      <thead>
-        <th>Given Name</th>
-        <th>Surname</th>
-        <th>Sex</th>
-        <th>Family Size</th>
-      </thead>
-      <tbody id="view-body"></tbody>
-      
-    </table>
-		</div>
+            <label for="currFile">Selected File:</label>
+            <br>
+            <textarea readonly id="selected-file"></textarea>
+          </div>
+          <br>
+        <table id="view-table">
+          <thead>
+          <th>Given Name</th>
+          <th>Surname</th>
+          <th>Sex</th>
+          <th>Family Size</th>
+          </thead>
+          <tbody id="view-body"></tbody>
+        </table>
+        </div>
         <hr>
-  	  </div>
-	</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section id="createPage" class="bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <h2>Create Simple GEDCOM</h2>
+          <form id="create-form" class="form" action="">
+    			  <label for="filename">Filename:</label>
+    			  <input type="filename" class="form-control" id="filename" required>
+      			  <label for="submitter">Submitter:</label>
+    			  <input type="submitter" class="form-control" id="submitter" required>
+    			  <label for="address">Address:</label>
+    			  <input type="address" class="form-control" id="address">
+    			  <button type="submit" class="btn btn-primary">Submit</button>
+		     </form>
+      </div>
+    </div>
   </div>
 </section>
 
+<section id="indivPage" class="bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <h2>Add Individual</h2>
+        	<select id="indiv-dropdown"></select>
+		      <label for="currFile">Selected File:</label>
+		      <br>
+		      <textarea readonly id="indiv-file"></textarea>
+          <form id="add-indiv" class="form" action="">
+            <label for="indivFirst">First Name:</label>
+            <input type="indivFirst" class="form-control" id="indivFirst">
+            <label for="indivLast">Last Name:</label>
+            <input type="indivLast" class="form-control" id="indivLast">
+            <button type="submit" class="btn btn-primary">Submit</button>
+      	 </form>
+      </div>
+    </div>
+  </div>
+</section>
 
-<section id="createPage" class="bg-light">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <h2>Create Simple GEDCOM</h2>
-            <form id="create-form" class="form" action="">
-			  <label for="filename">Filename:</label>
-			  <input type="filename" class="form-control" id="filename" required>
-  			  <label for="submitter">Submitter:</label>
-			  <input type="submitter" class="form-control" id="submitter" required>
-			  <label for="address">Address:</label>
-			  <input type="address" class="form-control" id="address">
-			  <button type="submit" class="btn btn-primary">Submit</button>
-			</form>
+<section id="descPage" class="bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <h2>Get Descendents</h2>
+        <div class="dropdown">
+          <select id="desc-dropdown"></select>
+      		<label for="currFile">Selected File:</label>
+      		<br>
+  		    <textarea readonly id="desc-file"></textarea>
+        </div>
+        <form id="desc-form" class="form" action="">
+          <label for="indivFirst">First Name:</label>
+          <input type="first" class="form-control" id="descFirst">
+          <label for="indivLast">Last Name:</label>
+          <input type="last" class="form-control" id="descLast">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+		    <textarea readonly id="desc-text"></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <section id="ancsPage" class="bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h2>Get Ancestors</h2>
+          <div class="dropdown">
+            <select id="ancs-dropdown"></select>
+            <label for="currFile">Selected File:</label>
+            <br>
+            <textarea readonly id="ancs-file"></textarea>
           </div>
+          <form id="ancs-form" class="form" action="">
+            <label for="indivFirst">First Name:</label>
+            <input type="first" class="form-control" id="ancsFirst">
+            <label for="indivLast">Last Name:</label>
+            <input type="last" class="form-control" id="ancsLast">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+          <textarea readonly id="ancs-text"></textarea>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="indivPage" class="bg-light">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <h2>Add Individual</h2>
-
-            	<select id="indiv-dropdown">
-				</select>
-				<label for="currFile">Selected File:</label>
-				<br>
-				<textarea readonly id="indiv-file"></textarea>
-            <form id="add-indiv" class="form" action="">
-			  <label for="indivFirst">First Name:</label>
-			  <input type="indivFirst" class="form-control" id="indivFirst">
-  			  <label for="indivLast">Last Name:</label>
-			  <input type="indivLast" class="form-control" id="indivLast">
-			  <button type="submit" class="btn btn-primary">Submit</button>
-			</form>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="descPage" class="bg-light">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <h2>Get Descendents</h2>
-            <div class="dropdown">
-            <select id="desc-dropdown">
-				</select>
-				<label for="currFile">Selected File:</label>
-				<br>
-				<textarea readonly id="desc-file"></textarea>
-			</div>
-	            <form id="desc-form" class="form" action="">
-				  <label for="indivFirst">First Name:</label>
-				  <input type="first" class="form-control" id="descFirst">
-	  			  <label for="indivLast">Last Name:</label>
-				  <input type="last" class="form-control" id="descLast">
-				  <button type="submit" class="btn btn-primary">Submit</button>
-				</form>
-				<textarea readonly id="desc-text">
-				</textarea>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="ancsPage" class="bg-light">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <h2>Get Ancestors</h2>
-            <div class="dropdown">
-            <select id="ancs-dropdown">
-				</select>
-				<label for="currFile">Selected File:</label>
-				<br>
-				<textarea readonly id="ancs-file"></textarea>
-			</div>
-
-            <form id="ancs-form" class="form" action="">
-			  <label for="indivFirst">First Name:</label>
-			  <input type="first" class="form-control" id="ancsFirst">
-  			  <label for="indivLast">Last Name:</label>
-			  <input type="last" class="form-control" id="ancsLast">
-			  <button type="submit" class="btn btn-primary">Submit</button>
-			</form>
-			<textarea readonly id="ancs-text"></textarea>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="databasePage" class="bg-light">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <h2>SQL Database</h2>
+  <section id="databasePage" class="bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h2>SQL Database</h2>
+            <hr>
+              <div class="btn-group btn-group-justified">
+                <a id = 'store-all' class="btn btn-primary">Store All Files</a>
+                <a id = 'clear-all' class="btn btn-primary">Clear All Files</a>
+                <a id = 'display-db' class="btn btn-primary">Display DB</a>
+              </div> <!-- End of buttons -->
 
               <hr>
 
-                <div class="btn-group btn-group-justified">
-                  <a id = 'store-all' class="btn btn-primary">Store All Files</a>
-                  <a id = 'clear-all' class="btn btn-primary">Clear All Files</a>
-                  <a id = 'display-all' class="btn btn-primary">Display All Files</a>
-                </div> <!-- End of buttons -->
+              <h4>Queries</h4>
+              <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Select an option
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a id="all-indiv-last" class="dropdown-item" href="#current">Display all individuals (sorted by last name)</a>
+                  <a id="from-file-sort" class="dropdown-item" href="#current">Display from file (sorted by **something**)</a>
+                  <a id="option-3" class="dropdown-item" href="#current">Option 3</a>
+                  <a id="option-4" class="dropdown-item" href="#current">Option 4</a>
+                  <a id="option-5" class="dropdown-item" href="#current">Option 5</a>
+                </div>
+              </div> <!-- End of dropdown menu -->
 
-                <br>
-                <br>
-              
-                <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Select an option
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a id="all-indiv-last" class="dropdown-item" href="#current">Display all individuals (sorted by last name)</a>
-                    <a id="from-file-sort" class="dropdown-item" href="#current">Display from file (sorted by **something**)</a>
-                    <a id="option-3" class="dropdown-item" href="#current">Option 3</a>
-                    <a id="option-4" class="dropdown-item" href="#current">Option 4</a>
-                    <a id="option-5" class="dropdown-item" href="#current">Option 5</a>
-                  </div>
-                </div> <!-- End of dropdown menu -->
+              <hr>
 
-                <br>
-                <label for="file">Results</label>
-                <textarea readonly id="response" class="response-box" style="min-height:200pt"></textarea>
+              <h4>Execute Query</h4>
+              <div class="container"> <!-- Start of execute query -->
+                <form id="execute-query-form" class="form"> <!-- Start of execute query form -->
+                  <span>SELECT</span>
+                  <input id="execute-query-text"></input>
+                  <button type="submit" class="btn btn-primary" action="#">Submit</button>
+                </form> <!-- End of execute query form -->
+              </div> <!-- End of execute query -->
 
-                <!-- Modal forms for dropdown -->
+              <hr>
+              <br>
 
-                <!-- Modal 1 -->
-                <div id="all-indivs-modal" class="modal fade" role="dialog">
-                  <div class="modal-dialog">
+              <h4>Results</h4>
+              <textarea readonly id="response" class="response-box" style="min-height:200pt"></textarea>
 
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h4 class="modal-title">Display All Individuals</h4>
-                      </div>
-                      
-                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      </div>
+              <!-- Modal forms for dropdown -->
+
+              <!-- Modal 1 -->
+              <div id="all-indivs-modal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title">Display All Individuals</h4>
                     </div>
-
+                    
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <!-- Modal 2 -->
-                <div id="from-file-modal" class="modal fade" role="dialog">
-                  <div class="modal-dialog">
+              <!-- Modal 2 -->
+              <div id="from-file-modal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
 
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h4 class="modal-title">Display Individuals From File</h4>
-                      </div>
-                      <div class="modal-body">
-
-                        <form role="form">
-                          <div class="form-group">
-                            <div class="dropdown">
-                              <label for="file">File:</label>
-                              <select id="modal-file-dropdown"></select>
-                              <br>
-                              <textarea readonly id="file-display" class="form-control"></textarea>
-                            </div> <!-- End of dropdown menu -->
-                          </div> <!-- End of form group -->
-                        </form>
-
-                      </div>
-                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      </div>
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title">Display Individuals From File</h4>
                     </div>
-
+                    <div class="modal-body">
+                      <form role="form"> 
+                        <div class="form-group">
+                          <div class="dropdown">
+                            <label for="file">File:</label>
+                            <select id="modal-file-dropdown"></select>
+                            <br>
+                            <textarea readonly id="file-display" class="form-control"></textarea>
+                          </div> <!-- End of dropdown menu -->
+                        </div> <!-- End of form group -->
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <!-- Modal 3 -->
-                <div id="modal-3" class="modal fade" role="dialog">
-                  <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h4 class="modal-title">Option 3</h4>
-                      </div>
-                      <div class="modal-body">
-                      </div>
-                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      </div>
+              <!-- Modal 3 -->
+              <div id="modal-3" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title">Option 3</h4>
                     </div>
-
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <!-- Modal 4 -->
-                <div id="modal-4" class="modal fade" role="dialog">
-                  <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h4 class="modal-title">Option 4</h4>
-                      </div>
-                      <div class="modal-body">
-                      </div>
-                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      </div>
+              <!-- Modal 4 -->
+              <div id="modal-4" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title">Option 4</h4>
                     </div>
-
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <!-- Modal 5 -->
-                <div id="modal-5" class="modal fade" role="dialog">
-                  <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h4 class="modal-title">Option 5</h4>
-                      </div>
-                      <div class="modal-body">
-                      </div>
-                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      </div>
+              <!-- Modal 5 -->
+              <div id="modal-5" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title">Option 5</h4>
                     </div>
-
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                   </div>
                 </div>
-                <!-- End of modal forms for dropdown -->
+              </div>
+              <!-- End of modal forms for dropdown -->
 
-
-
-
-
-
-
-
-
-
-          </div> <!-- End of col-lg -->
-        </div> <!-- End of row -->
-      </div> <!-- End of container -->
-    </section>
+        </div> <!-- End of col-lg -->
+      </div> <!-- End of row -->
+    </div> <!-- End of container -->
+  </section> <!-- End of modal popups -->
     
   <div class="container">
-    <div class="modal fade" id="login-form" role="dialog">
+    <div class="modal fade" id="login-form" role="dialog" data-backdrop="static">
       <div class="modal-dialog">
-
         <!-- Modal content-->
         <div class="modal-content">
           <div class="modal-header">
+            <h4 class="modal-title">Connect to MySQL</h4>
           </div>
           <div class="modal-body">
             <form role="form">
               <div class="form-group">
                 <label for="databaseName"><span class="glyphicon glyphicon-user"></span> Database</label>
-                <input type="text" class="form-control" id="databaseName" required placeholder="Enter Database">
+                <input type="text" value="test" class="form-control" id="databaseName" required placeholder="Enter Database">
               </div>
               <div class="form-group">
                 <label for="userName"><span class="glyphicon glyphicon-user"></span> Username</label>
-                <input type="text" class="form-control" id="userName" required placeholder="Enter Username">
+                <input type="text" value="root" class="form-control" id="userName" required placeholder="Enter Username">
               </div>
               <div class="form-group">
                 <label for="password"><span class="glyphicon glyphicon-eye-open"></span> Password</label>
-                <input type="text" class="form-control" id="password" required placeholder="Enter Password">
+                <input type="password" value="0947706" class="form-control" id="password" required placeholder="Enter Password">
               </div>
               <button type="submit" class="btn btn-default btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Login</button>
             </form>

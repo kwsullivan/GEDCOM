@@ -10,26 +10,26 @@
 int main(int argc, char**argv) {
 	GEDCOMobject* gedObj;
 	printf("FILE %s\n", argv[1]);
-
+	char* errMsg = NULL;
 	GEDCOMerror err = createGEDCOM(argv[1], &gedObj);
 	
 	if(err.type == OK) {
 		printf(GRN);
-		printf("%s", printError(err));
+		errMsg = printError(err);
+		printf("%s", errMsg);
 	}
 	else {
 		printf(RED);
-		printf("%s", printError(err));
+		errMsg = printError(err);
+		printf("%s", errMsg);
 	}
 	printf(RESET);
 
-	err = writeGEDCOM("../write/test.ged", gedObj);
+	//err = writeGEDCOM("test.ged", gedObj);
 
 	//**************************************************
 	//**************************************************
-
-
-
+/*
 	Individual* person = NULL;
 	Node* indivIter = gedObj->individuals.head;
 	while(indivIter != NULL) {
@@ -40,36 +40,17 @@ int main(int argc, char**argv) {
 		indivIter = indivIter->next;
 	}
 
-	List desc = getDescendantListN(gedObj, person, 2);
 	
 	char* moreIndivs = gListToJSON(desc);
 	printf("%s\n", moreIndivs);
-	/***********
+
 	char* string = indToJSON(person);
+	printf("%s\n", string);
 	Individual * test = JSONtoInd("{\"givenName\":\"William\",\"surname\":\"Shakespeare\"}");
-    if (strcmp(string, "{\"givenName\":\"William\",\"surname\":\"Shakespeare\"}") == 0){
-    	printf("THEY ARE EQUAL\n");
-    }
-	printIndividual(person);
-	List ancestors = getAncestorListN(gedObj, person, 2);
-	printf("LIST LENGTH IS %d\n", ancestors.length);
-	Node* ansIter = ancestors.head;
-	while(ansIter != NULL) {
-		List * parents = (List*)ansIter->data;
-		printList(*parents);
-		ansIter = ansIter->next;
-	}
-
-***********/
-	//printList(descN);
-    /***************
-    List events = initializeList(&printEvent, &deleteEvent, &compareEvents);
-	List otherFields = initializeList(&printField, &deleteField, &compareFields);
-    Individual* person = createIndividual("John", "Shakespeare", events, otherFields);
-    List desc = getDescendants(gedObj, person);
-    printList(desc);
-    ******************/
-
+	printIndividual(test);
+	char* fToJSON = fileToJSON("./", argv[1]);
+	printf("%s\n", fToJSON);
+*/
 	if(err.type == OK) {
 		//printf("%s", printGEDCOM(gedObj));
 		deleteGEDCOM(gedObj);

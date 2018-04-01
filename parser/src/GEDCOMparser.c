@@ -532,31 +532,8 @@ void deleteGEDCOM(GEDCOMobject* obj) {
 
 char* printError(GEDCOMerror err) {
 
-    switch(err.type) {
-        case OK:
-            return "OK";
-            break;
-        case INV_FILE:
-            return "INV_FILE";
-            break;
-        case INV_GEDCOM:
-            return "INV_GEDCOM";
-            break;
-        case INV_HEADER:
-            return "INV_HEADER";
-            break;
-        case INV_RECORD:
-            return "INV_RECORD";
-            break;
-        case OTHER_ERROR:
-            return "OTHER_ERROR";
-            break;
-        case WRITE_ERROR:
-            return "WRITE_ERROR";
-            break;
-    }
-    //char* error = NULL;
-    /*
+    char* error = NULL;
+    
     switch(err.type) {
         case OK:
         error = malloc(sizeof(char)*20);
@@ -588,7 +565,7 @@ char* printError(GEDCOMerror err) {
             break;
     }
     return error;
-    */
+    
 }
 
 Individual* findPerson(const GEDCOMobject* familyRecord, bool (*compare)(const void* first, const void* second), const void* person) {

@@ -273,21 +273,21 @@ app.get('/database-store', function(req , res) {
           console.log('Success for file' + filepaths[i]);
           for(let curr of filepaths) {
             connection.query("SELECT file_id FROM FILE WHERE file_name='" + curr + "'", function(err, result) {
-          if (err) console.log("Something went wrong. "+err);
-          else {
-            var id = result[0].file_id;
-            let indivLib = sharedLib.indivsToJSON(curr);
-            var indivs = JSON.parse(indivLib);
-            for(let ind of indivs) {
-              let indivData = ("INSERT INTO INDIVIDUAL (surname, given_name, sex, fam_size, source_file) VALUES ('" + ind.surname + "','" + ind.givenName + "','" + ind.sex + "','" + ind.famSize + "','" + id + "')");
-              connection.query(indivData, function(err, rows, fields) {
-                if (err) console.log("Something went wrong. "+err);
-                else console.log('Success for individual ' + ind.givenName +' '+ ind.surname);
-              });
-            }
+              if (err) console.log("Something went wrong. "+err);
+              else {
+                var id = result[0].file_id;
+                let indivLib = sharedLib.indivsToJSON(curr);
+                var indivs = JSON.parse(indivLib);
+                for(let ind of indivs) {
+                  let indivData = ("INSERT INTO INDIVIDUAL (surname, given_name, sex, fam_size, source_file) VALUES ('" + ind.surname + "','" + ind.givenName + "','" + ind.sex + "','" + ind.famSize + "','" + id + "')");
+                  connection.query(indivData, function(err, rows, fields) {
+                    if (err) console.log("Something went wrong. "+err);
+                    else console.log('Success for individual ' + ind.givenName +' '+ ind.surname);
+                    });
+                }
+              }
+            });
           }
-        });
-      }
         } 
       });
     }
@@ -297,19 +297,37 @@ app.get('/database-store', function(req , res) {
 
 app.get('/database-clear', function(req , res) {
   connection.query("DELETE FROM INDIVIDUAL", function(err, rows, fields) {
-    if(err) console.log('could not delete from individual');
+    if(err) console.log('could not delete from INDIVIDUAL');
     else {
       connection.query("DELETE FROM FILE", function(err, rows, fields) {
-        if(err) console.log('could not delete from file');
-        else res.send({
+        if(err) console.log('could not delete from FILE');
+        else {
+          res.send({
           success: 'Cleared tables'
         });
+        }
       });
     }
   });
+});
 
-
-
+app.get('/display-all', function(req , res) {
+  var rows;
+  connection.query("SELECT COUNT(*) FROM FILE", function(err, result) {
+    if(err) console.log('could not display rows from INDIVIDUAL');
+    else {
+      rows.ind = result;
+      connection.query("DELETE FROM FILE", function(err, result) {
+        if(err) console.log('could not display rows from FILE');
+        else {
+          rows.file = result;
+          console.log(rows.file);
+          console.log(rows.ind);
+          res.send(rows);
+        }
+      });
+    }
+  });
 });
 
 app.listen(portNum);

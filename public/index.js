@@ -223,6 +223,7 @@ $('#clear-all').click(function() {
         dataType: 'json',
         url: '/database-clear',
         success: function (data) {
+            $('#status-box').append(data + "<br>");
             console.log(data);
         },
         error: function(error) {
